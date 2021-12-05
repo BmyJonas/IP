@@ -1,0 +1,194 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>ArcGIS Developer Guide: Satellite basemap layer</title>
+  <style>
+    html, body, #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.21/"></script>
+
+  <script>
+    require([
+        "esri/config",
+        "esri/WebScene",
+        "esri/views/SceneView",
+        "esri/layers/FeatureLayer",
+        "esri/layers/SceneLayer",
+        "esri/rest/support/Query",
+		"esri/symbols/ExtrudeSymbol3DLayer",
+		"esri/symbols/PolygonSymbol3D",
+		"esri/symbols/Symbol3DLayer"
+    ],(esriConfig, WebScene, SceneView, FeatureLayer, SceneLayer,Symbol3DLayer, ExtrudeSymbol3DLayer,PolygonSymbol3D, Query)=> {
+      esriConfig.apiKey = "AAPK845baaeea5ee4020ab29ac91fdb08d95n_l0PySguahHxOrCeavvYrdo0Df5oR2XfC-zqp4dMsY_xlaqK8KmRyywty1QXkqr";
+
+      const webscene = new WebScene({
+        basemap: "satellite",
+        ground: "world-elevation"
+      });
+
+      const view = new SceneView({
+        container: "viewDiv",
+        map: webscene,
+        camera: {
+		 position: {
+            x: 9.605500, //Longitude
+            y: 52.315480, //Latitude
+            z: 1500 // Meters
+          },
+          tilt: 45
+		  }
+      });
+	  
+	  
+	         
+
+const WEARenderer = {
+  type: "simple", // autocasts as new SimpleRenderer()
+  symbol: {
+    type: "web-style", // autocasts as new WebStyleSymbol()
+    styleName: "EsriInfrastructureStyle",
+    name: "Wind_Turbine"
+  },
+  visualVariables: [
+    {
+      type: "size",
+      axis: "height", // specify which axis to apply the data values to
+      field: "hoeheges",
+      valueUnit: "meters"
+    }
+      ]
+};
+
+
+        // define WEALayer
+        const WEALayer = new FeatureLayer({
+          url:
+            "https://services6.arcgis.com/LHIrPUrEymsmTptn/arcgis/rest/services/WEA_singleparts/FeatureServer",
+                   renderer: WEARenderer
+			 
+            
+        });
+		
+		webscene.add( WEALayer);
+
+	
+	
+let symbol = {
+  type: "polygon-3d",  // autocasts as new PolygonSymbol3D()
+  symbolLayers: [{
+    type: "extrude",  // autocasts as new ExtrudeSymbol3DLayer()
+    size: 50,  // 100,000 meters in height
+    material: { color: "green" }
+  }]
+};
+
+const symbol2 = {
+  type: "polygon-3d",  // autocasts as new PointSymbol3D()
+  symbolLayers: [{
+    type: "object",  // autocasts as new ObjectSymbol3DLayer()
+    width: 5,  // diameter of the object from east to west in meters
+    height: 20,  // height of the object in meters
+    depth: 15,  // diameter of the object from north to south in meters
+    resource: { primitive: "cylinder" },
+    material: { color: "red" }
+  }]
+};
+
+// funktioniert mit Zelt :-)
+const symbol3 = {
+  type: "point-3d",
+  symbolLayers: [
+    {
+      type: "object",
+      height: 10,
+	  width: 1,
+      resource: {
+        href: "https://developers.arcgis.com/javascript/latest/sample-code/import-gltf/live/tent.glb"
+      }
+    }
+  ]
+};
+
+let symbol4 = {
+  type: "polygon-3d", // autocasts as new PolygonSymbol3D()
+  symbolLayers: [
+    {
+			type: "object",
+			resource: {
+              type: "web-style", // autocasts as new WebStyleSymbol()
+              name: "Pinus",
+              styleName: "EsriRealisticTreesStyle"
+			  },
+			  height: 100,
+			  width: 1,
+}
+   ]
+};
+
+const symbol5 = {
+  //type: "point-3d", // autocasts as new SimpleRenderer()
+  symbol: {
+    type: "web-style", // autocasts as new WebStyleSymbol()
+    styleName: "esriRealisticTreesStyle",
+    name: "Acer"
+  }
+};
+
+const symbol6 = {
+  type: "polygon-3d",
+  symbolLayers: [
+    {
+      type: "object",
+      height: 50,
+	  width: 18,
+      resource: {
+        href: "C:\Users\jonas\Downloads\maple_tree\scene.gltf"
+      }
+    }
+  ]
+};
+
+
+  
+const polygonrenderer = {
+          type: "simple", // autocasts as new SimpleRenderer()
+          symbol: {
+	type: "web-style", // autocasts as new WebStyleSymbol()
+    styleName: "esriRealisticTreesStyle",
+    name: "Quercus Rubra"
+  },
+};
+
+        // define forestLayer
+        const forestLayer = new FeatureLayer({
+          url:
+            "https://services6.arcgis.com/LHIrPUrEymsmTptn/arcgis/rest/services/forest_punkte2/FeatureServer",
+                  renderer: polygonrenderer
+			 
+            
+        });
+		
+		webscene.add( forestLayer);
+
+
+		
+
+		
+		
+
+
+    });
+  </script>
+</head>
+<body>
+  <div id="viewDiv"></div>
+</body>
+</html>
